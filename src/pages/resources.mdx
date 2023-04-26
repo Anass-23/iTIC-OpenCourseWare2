@@ -1,0 +1,232 @@
+export const description =
+  'On this page, we\'ll dive into the different attachment endpoints you can use to manage attachments programmatically.'
+
+# Resources
+
+Attachments are how you share things in Protocol — they allow you to send all sorts of files to your contacts and groups. On this page, we'll dive into the different attachment endpoints you can use to manage attachments programmatically. We'll look at how to query, upload, update, and delete attachments. {{ className: 'lead' }}
+
+## The resource model
+
+The attachment model contains all the information about the files you send to your contacts and groups, including the name, type, and size.
+
+### Properties
+
+<Properties>
+  <Property name="name" type="string">
+    The name of the resource.
+  </Property>
+  <Property name="type" type="string">
+    The type of resource:
+    - ***`dir`*** for a **directory** resource
+    - ***`file`*** for a **file** resource
+  </Property>
+  <Property name="file_type" type="string">
+    The file type of a ***`file`*** resource
+  </Property>
+  <Property name="created_at" type="timestamp">
+    Timestamp of when the attachment was created.
+  </Property>
+  <Property name="href" type="string">
+    The URL for the attached resource.
+  </Property>
+</Properties>
+---
+
+## Get a resource {{ tag: 'GET', label: '/:acro/:path' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve the information about a resource attachment.
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/:acro/:path">
+
+    ```bash {{ title: 'cURL' }}
+    curl -G https://API_URL/PBN/teoria/(T3) Visibilitat
+    ```
+
+    ```js
+    import ApiClient from '@example/protocol-api'
+
+    const client = new ApiClient(token)
+
+    await client.attachments.list()
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "name": "(T3) Visibilitat",
+      "type": "file",
+      "file_type": "application/pdf",
+      "created_at": 692233200,
+      "href": "https://API_URL/@@download/PBN/teoria/(T3) Visibilitat"
+    }
+    ```
+  </Col>
+</Row>
+
+---
+
+## Create a new resource {{ tag: 'POST', label: '/:acro/:path' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to upload a new resource. See the code examples for how to create a resource or send a file to the API.
+
+    ### Required attributes
+
+    <Properties>
+      <Property name="type" type="string">
+        The type of resource to be created.
+      </Property>
+      <Property name="name" type="string">
+        The name of the resource.
+      </Property>
+    </Properties>
+
+    ### Optional attributes
+
+    <Properties>
+      <Property name="file" type="string">
+        The file to be uploaded (in case of having a ***`file`*** resource). 
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="POST" label="/:acro/:path">
+
+    ```bash {{ title: 'cURL' }}
+    curl https://api.protocol.chat/ASI/teoria/Apunts_Tema_1.pdf \
+      -H "Authorization: Bearer {token}" \
+      -F file="../Apunts_Tema_1.pdf"
+    ```
+
+    ```js
+    import ApiClient from '@example/protocol-api'
+
+    const client = new ApiClient(token)
+
+    await client.attachments.create({ file })
+    ```
+
+    ```python
+    from protocol_api import ApiClient
+
+    client = ApiClient(token)
+
+    client.attachments.create(file=file)
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "name": "Apunts_Tema_1.pdf",
+      "type": "file",
+      "file_type": "application/pdf",
+      "created_at": 692233450,
+      "href": "https://API_URL/@@download/ASI/teoria/Apunts_Tema_1.pdf"
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+
+
+## Delete a resource {{ tag: 'DELETE', label: '/:acro/:path' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to delete a resource attachments. 
+    
+    <Warning>
+      This will permanently delete the file. 
+    </Warning>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="DELETE" label="/:acro/:path">
+
+    ```bash {{ title: 'cURL' }}
+    curl -X DELETE https://api.protocol.chat/ASI/teoria/Apunts_Tema_1.pdf \
+      -H "Authorization: Bearer {token}"
+    ```
+
+    ```js
+    import ApiClient from '@example/protocol-api'
+
+    const client = new ApiClient(token)
+
+    await client.attachments.delete('Nc6yKKMpcxiiFxp6')
+    ```
+
+    ```python
+    from protocol_api import ApiClient
+
+    client = ApiClient(token)
+
+    client.attachments.delete("Nc6yKKMpcxiiFxp6")
+    ```
+
+    ```php
+    $client = new \Protocol\ApiClient($token);
+
+    $client->attachments->delete('Nc6yKKMpcxiiFxp6');
+    ```
+
+    </CodeGroup>
+
+  </Col>
+</Row>
+
+---
+
+
+## Download a resource {{ tag: 'GET', label: '/static/:acro/:path' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a ***`file`*** resource.
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/static/:acro/:path">
+
+    ```bash {{ title: 'cURL' }}
+    curl https://api.protocol.chat/static/IU/teoria/6-internacionalitzacio.pdf
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response Header' }}
+    HTTP/1.1 200 OK
+    Date: Wed, 26 Apr 2023 14:18:18 GMT
+    Server: waitress
+    Accept-Ranges: bytes
+    Content-Disposition: attachment; filename*=UTF-8''6-internacionalitzacio.pdf
+    Content-Length: 279025
+    Content-Type: application/pdf
+    Via: waitress
+    X-Frame-Options: SAMEORIGIN
+    X-Powered-By: Zope (www.zope.org), Python (www.python.org)
+    Keep-Alive: timeout=5, max=93
+    Connection: Keep-Alive
+    ```
+
+  </Col>
+</Row>

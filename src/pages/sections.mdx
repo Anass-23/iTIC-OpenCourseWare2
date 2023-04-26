@@ -1,0 +1,122 @@
+export const description =
+  'On this page, we\'ll dive into the section contact endpoints you can use to view sections programmatically.'
+
+# Sections
+
+As described at the beginning, each course has 4 different sections:
+
+- ***Informació***
+- ***Teoria***
+- ***Apunts***
+- ***Projecte***
+
+The new **iTIC OCW** tried to structure the contents of a course the best way possible, the schema of the structure is the following one:
+
+  ```json {{ title: 'Response' }}
+  - PBN
+  ├─teoria
+  │  ├─ apunts 
+  │  │   ├─ Tema-1
+  │  │   │   └─ Tema-1.pdf
+  │  │   │   └─ Manual-Tema-1.zip
+  │  │   └─ Tema-2.pdf
+  │  ├─ presentacions
+  │  └─ exercicis
+  │
+  └─ ...
+  ```
+
+<Note>
+  The API gives fully flexibility to place the items and create new directories/folders. 
+  However, we do not suggest embedding to many folders. Remember, Keep it simple!
+</Note>
+
+
+Briefly, the iTIC OCW defines the sections &raquo; **`Guia docent`**, **`Apunts`**, **`Presentacions`**, **`Exercicis`**, **`Exàmens`** or **`Continguts`**
+
+- ***Informació***: Contains the ***`Guia docent`*** section.
+- ***Teoria***: Contains the ***`Apunts`***, ***`Presentacions`***, ***`Exercicis`***, ***`Exàmens`*** sections
+- ***Apunts***: Contains the ***`Continguts`*** section
+- ***Projecte***: Contains the ***`Continguts`*** section
+
+For having a well structured schema for an OpenCourseWare
+As the name suggests, contacts are a core part of Protocol — the very reason Protocol exists is so you can have secure conversations with your contacts. {{ className: 'lead' }}
+
+## The resource model
+
+The contact model contains all the information about your contacts, such as their username, avatar, and phone number. It also contains a reference to the conversation between you and the contact and information about when they were last active on Protocol.
+
+### Properties
+
+<Properties>
+  <Property name="title" type="string">
+    The title of the section for now: **`Guia docent`**, **`Apunts`**, **`Presentacions`**, **`Exercicis`**, **`Exàmens`** or **`Continguts`**
+  </Property>
+
+  <Property name="numItems" type="integer">
+    The number of resources that the section contains
+  </Property>
+  
+  <Property name="defaultOpen" type="boolean">
+    If defaultOpen is set, the resources of the section will be displayed by default.
+  </Property>
+  
+  <Property name="files" type="resource[]">
+    A list of recources of type ***`file`***
+  </Property>
+  
+  <Property name="directory" type="resource[]">
+    A list of recources of type ***`dir`***
+  </Property>
+</Properties>
+
+---
+
+## List all sections {{ tag: 'GET', label: '/:acro/:path' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to retrieve a section list with all the resources grouped by **directories** and **files**.
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/:acro/:path">
+
+    ```bash {{ title: 'cURL' }}
+    curl -G https://API_URL/PBN/teoria/Tema-1 \
+      -H "Authorization: Bearer {token}"
+    ```
+
+    ```js
+    import ApiClient from '@example/protocol-api'
+
+    const client = new ApiClient(token)
+
+    await client.contacts.list()
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+      [
+        {
+          "title": "Apunts",
+          "numItems": "5",
+          "defaultOpen": true,
+          "files": [
+              {
+                "label": "(T2) Visibilitat", 
+                "href": "https://URL_API/@@download/file/3-visibilitat.pdf"
+              },
+              ...
+          ],
+          "directories": [
+              {"label": "(T3) Visibilitat"},
+              {"label": "(T9) Web API"}
+          ]
+        },
+        ...
+      ]
+    ```
+  </Col>
+</Row>
